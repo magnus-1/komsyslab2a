@@ -55,6 +55,8 @@ public class User implements Runnable { // should not implement runable, but ins
 
     }
 
+
+
     // deregesrate from server
     private void closeAllConnections() {
         if (clientSocket != null) {
@@ -87,6 +89,11 @@ public class User implements Runnable { // should not implement runable, but ins
 
     // replace with rmi notifinble version ...
 
+
+    public void sendMsgToclient(String msg)
+    {
+        System.out.println("Incoming msg: " + msg);
+    }
     @Override
     public void run() {
         BufferedReader buffer = null;

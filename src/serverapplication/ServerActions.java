@@ -1,5 +1,7 @@
 package serverapplication;
 
+import clientapplication.ClientRMI;
+
 /**
  * Created by o_0 on 2016-09-20.
  */
@@ -8,9 +10,9 @@ public interface ServerActions {
      * Disconect the client and remove it from active chatters
      * @param client
      */
-    void disconnectClient(Client client);
+    void disconnectClient(ClientRMI client);
 
-    boolean nickExist(String nickName);
+    ClientRMI changeNick(String nickName, ClientRMI requestSender);
 
     /**
      * list Nicknames
@@ -30,5 +32,5 @@ public interface ServerActions {
      * @param from who sent the msg
      * @return
      */
-    boolean broadcastMsg(String msg,Client from);
+    boolean broadcastMsg(String msg, ClientRMI from);
 }

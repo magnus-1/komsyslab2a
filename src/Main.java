@@ -24,8 +24,8 @@ public class  Main {
         }
         if (args[0].toLowerCase().equals(SERVER)){
             System.out.println("Starting Server...");
-            Server server = new Server(Integer.parseInt(args[1]));
-            server.start();
+            Server server = new Server();
+            //server.start();
         }
     }
 }

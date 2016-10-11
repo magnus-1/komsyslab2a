@@ -1,5 +1,7 @@
 package serverapplication;
 
+import clientapplication.ClientRMI;
+
 /**
  * Created by o_0 on 2016-09-20.
  */
@@ -11,7 +13,7 @@ public class CmdQuit implements Command {
 
 
     @Override
-    public void processCommand(String msg, Client sender) {
+    public void processCommand(String msg, ClientRMI sender) {
         serverDelegate.disconnectClient(sender);
     }
 }
