@@ -5,6 +5,7 @@ import clientapplication.ClientRMI;
 import java.io.IOException;
 import java.net.*;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -14,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by o_0 on 2016-09-20.
  */
-public class Server implements ServerRMI, ServerLogic, ServerActions { // no need for thread
+public class Server extends UnicastRemoteObject implements ServerRMI, ServerLogic, ServerActions { // no need for thread
     private static final String DELIMITERS = "/ ";
     //ServerSocket serverSocket;
     //private Object clientLock = new Object();
@@ -47,7 +48,8 @@ public class Server implements ServerRMI, ServerLogic, ServerActions { // no nee
 //        }
 //    }
 
-    public Server(){
+    public Server() throws RemoteException {
+        super();
 //        this.running = new AtomicBoolean(true);
 //        this.serverSocket = new ServerSocket(port);
 //        this.clientLookup = new ConcurrentHashMap<SocketAddress, Client>();

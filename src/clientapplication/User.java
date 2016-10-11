@@ -1,91 +1,107 @@
 package clientapplication;
 
+import serverapplication.ServerRMI;
+
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.nio.Buffer;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by cj on 20/09/16.
  */
-public class User implements Runnable { // should not implement runable, but instead som notify thingy
+public class User extends UnicastRemoteObject implements ClientRMI { // should not implement runable, but instead som notify thingy
 
-    private Socket clientSocket;
-    private AtomicBoolean running;
-    private BufferedReader input;
-    private PrintWriter output;
+    String nickName = "";
+//    private Socket clientSocket;
+//    private AtomicBoolean running;
+//    private BufferedReader input;
+//    private PrintWriter output;
 
-    public User(String ip, int port) throws IOException {
-        this.clientSocket = new Socket(ip, port);
-        this.running = new AtomicBoolean(true);
-        try {
-            this.input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            this.output = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-        } catch (IOException e) {
-            e.printStackTrace();
-            closeAllConnections();
-        }
+    private ServerRMI serverRMI;
+    public User(ServerRMI serverRMI) throws RemoteException  {
+        super();
+        this.serverRMI = serverRMI;
+        this.nickName = "name" + (new Random()).nextInt();
+//        this.clientSocket = new Socket(ip, port);
+//        this.running = new AtomicBoolean(true);
+//        try {
+//            this.input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+//            this.output = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            closeAllConnections();
+//        }
     }
 
     //no need for threads
     public void start() {
-        Thread th = new Thread(this);
-        th.start();
+        //Thread th = new Thread(this);
+        //th.start();
         Scanner scanner = new Scanner(System.in);
         try {
 
-            while (running.get()) {
+            while (true) {
                 String msg = scanner.nextLine();
                 try {
-                    postMessage(msg);
+                    serverRMI.postChatMsg(this,msg);
+                    //postMessage(msg);
                     if (msg.equals("/quit")) {
-                        running.set(false);
+                        break;
                     }
                 } catch (IOException e) {
 
                     e.printStackTrace();
-                    running.set(false);
+                    break;
                 }
             }
         } finally {
-            closeAllConnections();
-        }
-
-    }
-
-
-
-    // deregesrate from server
-    private void closeAllConnections() {
-        if (clientSocket != null) {
+            //closeAllConnections();
             try {
-                clientSocket.close();
-            } catch (IOException e) {
+                serverRMI.deregistrateClient(this);
+            } catch (RemoteException e) {
                 e.printStackTrace();
             }
         }
-        if (this.output != null) {
-            this.output.close();
-        }
-        if (this.input != null) {
-            try {
-                this.input.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+
     }
 
-    public void postMessage(String msg) throws IOException {
-        this.output.println(msg);
-        this.output.flush();
-    }
 
-    public void terminateUser() {
-        running.set(false);
-    }
+
+//    // deregesrate from server
+//    private void closeAllConnections() {
+//        if (clientSocket != null) {
+//            try {
+//                clientSocket.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        if (this.output != null) {
+//            this.output.close();
+//        }
+//        if (this.input != null) {
+//            try {
+//                this.input.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+//
+//    public void postMessage(String msg) throws IOException {
+//        this.output.println(msg);
+//        this.output.flush();
+//    }
+
+//    public void terminateUser() {
+//        running.set(false);
+//    }
 
     // replace with rmi notifinble version ...
 
@@ -94,30 +110,41 @@ public class User implements Runnable { // should not implement runable, but ins
     {
         System.out.println("Incoming msg: " + msg);
     }
+
     @Override
-    public void run() {
-        BufferedReader buffer = null;
-        try {
-            while (running.get()) {
-                if (input == null) {
-                    break;
-                }
-                String msg = input.readLine();
-                if (msg == null) {
-                    running.set(false);
-                    return;
-                }
-                System.out.println(msg);
-
-
-            }
-        } catch (SocketException e) {
-
-        } catch (IOException e) {
-
-        } finally {
-            closeAllConnections();
-            running.set(false);
-        }
+    synchronized public String getNickName() throws RemoteException {
+        return this.nickName;
     }
+
+    @Override
+    synchronized public void setNickName(String nickName) throws RemoteException {
+        this.nickName = nickName;
+    }
+
+//    @Override
+//    public void run() {
+//        BufferedReader buffer = null;
+//        try {
+//            while (running.get()) {
+//                if (input == null) {
+//                    break;
+//                }
+//                String msg = input.readLine();
+//                if (msg == null) {
+//                    running.set(false);
+//                    return;
+//                }
+//                System.out.println(msg);
+//
+//
+//            }
+//        } catch (SocketException e) {
+//
+//        } catch (IOException e) {
+//
+//        } finally {
+//            closeAllConnections();
+//            running.set(false);
+//        }
+//    }
 }

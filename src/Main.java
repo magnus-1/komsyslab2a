@@ -19,7 +19,7 @@ public class  Main {
         if  (args[0].toLowerCase().equals(CLIENT)){
             System.out.println("Starting Client...");
             //InetSocketAddress addr = new InetSocketAddress(args[1],Integer.parseInt(args[2]));
-            User user = new User(args[1], Integer.parseInt(args[2]));
+            User user = new User(null);
             user.start();
         }
         if (args[0].toLowerCase().equals(SERVER)){
