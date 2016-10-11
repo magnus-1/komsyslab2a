@@ -44,6 +44,7 @@ public class User extends UnicastRemoteObject implements ClientRMI { // should n
                     serverRMI.postChatMsg(this,msg);
                     //postMessage(msg);
                     if (msg.equals("/quit")) {
+                        System.out.println("Time to quit...");
                         break;
                     }
                 } catch (IOException e) {
@@ -60,6 +61,7 @@ public class User extends UnicastRemoteObject implements ClientRMI { // should n
                 e.printStackTrace();
             }
         }
+        System.exit(0);
 
     }
 

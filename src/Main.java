@@ -23,6 +23,7 @@ public class Main {
                 User user = new User(server);
                 server.registrateClient(user);
                 user.start();
+                server.deregistrateClient(user);
 
             } catch (NotBoundException e) {
                 e.printStackTrace();
