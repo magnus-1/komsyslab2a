@@ -8,12 +8,5 @@ public interface ServerLogic {
      * @param from who sent the msg
      * @return
      */
-//    boolean broadcastMsg(String msg,Client from);
-//
-//    /**
-//     * evaluate a Command and preformes it
-//     * @param msg the command string
-//     * @param client who invoked the command
-//     */
-//    void evaluateCommand(String msg, Client client);
+
 }

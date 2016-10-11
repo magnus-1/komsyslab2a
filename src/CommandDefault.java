@@ -11,6 +11,5 @@ public class CommandDefault implements Command {
     @Override
     public void processCommand(String msg, ClientRMI sender) {
         System.out.println("this is the command default: " + name);
-//        sender.sendMsgToclient("This is the commands: who,quit osv");
     }
 }
