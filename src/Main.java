@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Scanner;
 
-public class Main {
+public class  Main {
 
     private static final String CLIENT = "client";
     private static final String SERVER = "server";
