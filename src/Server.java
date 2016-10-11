@@ -45,6 +45,8 @@ public class Server extends UnicastRemoteObject implements ServerRMI, ServerLogi
 
     @Override
     synchronized public void deregistrateClient(ClientRMI clientRMI) throws RemoteException {
+        if (clients.contains(clientRMI))
+            broadcastMsg("Client: " + clientRMI + " was removed from server", clientRMI);
         clients.remove(clientRMI);
     }
 
@@ -55,7 +57,7 @@ public class Server extends UnicastRemoteObject implements ServerRMI, ServerLogi
      */
     @Override
     synchronized public void disconnectClient(ClientRMI client) {
-        broadcastMsg("client disconected: " , client);
+        broadcastMsg("client disconected: ", client);
         clients.remove(client);
     }
 
@@ -90,7 +92,7 @@ public class Server extends UnicastRemoteObject implements ServerRMI, ServerLogi
         StringBuilder sb = new StringBuilder();
         ArrayList<ClientRMI> removeList = new ArrayList<>();
         String nickName;
-        for (ClientRMI user : clients ) {
+        for (ClientRMI user : clients) {
             System.out.println(user);
             try {
                 nickName = user.getNickName();
@@ -100,7 +102,7 @@ public class Server extends UnicastRemoteObject implements ServerRMI, ServerLogi
             }
             sb.append(nickName + "\n");
         }
-        for (ClientRMI c : removeList ) {
+        for (ClientRMI c : removeList) {
             clients.remove(c);
         }
         return sb.toString();
@@ -117,7 +119,8 @@ public class Server extends UnicastRemoteObject implements ServerRMI, ServerLogi
 
     /**
      * Brodcast a msg to all active chat clients
-     * @param msg the message
+     *
+     * @param msg  the message
      * @param from who sent the msg
      * @return
      */
@@ -134,27 +137,29 @@ public class Server extends UnicastRemoteObject implements ServerRMI, ServerLogi
             e.printStackTrace();
             return false;
         }
-        for (ClientRMI user : clients ) {
-                if (user == from) {
+        for (ClientRMI user : clients) {
+            if (user == from) {
 
-                    continue;
-                }
-                try {
-                    user.sendMsgToclient("from " + nickName + " msg: " + msg);
-                } catch (RemoteException e) {
-                    removeList.add(user);
-                }
+                continue;
             }
+            try {
+                user.sendMsgToclient("from " + nickName + " msg: " + msg);
+            } catch (RemoteException e) {
+                removeList.add(user);
+            }
+        }
 
-        for (ClientRMI c : removeList ) {
-            clients.remove(c);
+        for (ClientRMI c : removeList) {
+            disconnectClient(c);
+//          clients.remove(c);
         }
         return msgSent;
     }
 
     /**
      * evaluate a Command and preformes it
-     * @param msg the command string
+     *
+     * @param msg    the command string
      * @param client who invoked the command
      */
     public void evaluateCommand(String msg, ClientRMI client) throws RemoteException {

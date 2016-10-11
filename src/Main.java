@@ -22,6 +22,7 @@ public class Main {
                 ServerRMI server = (ServerRMI) Naming.lookup(url);
                 User user = new User(server);
                 server.registrateClient(user);
+                System.out.println("Client Started");
                 user.start();
                 server.deregistrateClient(user);
 
@@ -34,6 +35,7 @@ public class Main {
             System.out.println("Starting Server...");
             Server server = new Server();
             Naming.rebind(args[1], server);
+            System.out.println("Server started");
         }
     }
 }
