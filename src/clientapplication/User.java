@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by cj on 20/09/16.
  */
-public class User implements Runnable {
+public class User implements Runnable { // should not implement runable, but instead som notify thingy
 
     private Socket clientSocket;
     private AtomicBoolean running;
@@ -29,6 +29,7 @@ public class User implements Runnable {
         }
     }
 
+    //no need for threads
     public void start() {
         Thread th = new Thread(this);
         th.start();
@@ -54,6 +55,7 @@ public class User implements Runnable {
 
     }
 
+    // deregesrate from server
     private void closeAllConnections() {
         if (clientSocket != null) {
             try {
@@ -83,6 +85,7 @@ public class User implements Runnable {
         running.set(false);
     }
 
+    // replace with rmi notifinble version ...
 
     @Override
     public void run() {

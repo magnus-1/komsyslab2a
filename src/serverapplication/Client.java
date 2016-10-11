@@ -40,6 +40,7 @@ public class Client implements Runnable {
         return clientSocket.getRemoteSocketAddress();
     }
 
+
     public String getNickName() {
         return nickName;
     }
@@ -117,6 +118,7 @@ public class Client implements Runnable {
         }
     }
 
+    // from the notifble interface
     public void sendMsgToclient(String msg) throws IOException {
         System.out.println("Sending msg: " + msg + " to: " + clientSocket.getRemoteSocketAddress());
         synchronized (writeLock) {  //PrintWriter is not threadsafe

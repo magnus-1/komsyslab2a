@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by o_0 on 2016-09-20.
  */
-public class Server implements Runnable, ServerLogic, ServerActions {
+public class Server implements Runnable, ServerLogic, ServerActions { // no need for thread
     private static final String DELIMITERS = "/ ";
     ServerSocket serverSocket;
     private ConcurrentHashMap<SocketAddress, Client> clientLookup;
@@ -45,6 +45,7 @@ public class Server implements Runnable, ServerLogic, ServerActions {
         commandList.put("help", new CmdHelp(this));
     }
 
+    // loops thru and sends msg instead
     private void sendBroadcastMessage(MsgContainer msg) {
         sendBroadcastMessage(msg.msg, msg.client);
     }
@@ -123,6 +124,7 @@ public class Server implements Runnable, ServerLogic, ServerActions {
         threadPool.shutdown();
     }
 
+
     @Override
     public void removeClient(Client client) {
         SocketAddress addr = client.getSocketAddress();
@@ -143,6 +145,7 @@ public class Server implements Runnable, ServerLogic, ServerActions {
         return false;
     }
 
+    // de registrate client
     @Override
     public void disconnectClient(Client client) {
         SocketAddress addr = client.getSocketAddress();
@@ -184,6 +187,7 @@ public class Server implements Runnable, ServerLogic, ServerActions {
         return messageToBroadcast.offer(new MsgContainer(msg, from));
     }
 
+    // same
     @Override
     public void evaluateCommand(String msg, Client client) {
         StringTokenizer tokenizer = new StringTokenizer(msg.substring(1), DELIMITERS);
