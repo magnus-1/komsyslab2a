@@ -1,16 +1,8 @@
-package clientapplication;
-
-import serverapplication.ServerRMI;
-
 import java.io.*;
-import java.net.Socket;
-import java.net.SocketException;
-import java.nio.Buffer;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by cj on 20/09/16.

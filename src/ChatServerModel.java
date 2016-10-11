@@ -1,5 +1,3 @@
-package clientapplication;
-
 import java.io.IOException;
 
 /**

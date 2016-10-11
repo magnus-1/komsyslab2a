@@ -3,14 +3,9 @@
  * Created by cj on 16/09/16.
  */
 
-import clientapplication.User;
-import serverapplication.*;
-
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
-import java.util.Scanner;
 
 public class Main {
 
@@ -38,7 +33,6 @@ public class Main {
             System.out.println("Starting Server...");
             Server server = new Server();
             Naming.rebind(args[1], server);
-
         }
     }
 }

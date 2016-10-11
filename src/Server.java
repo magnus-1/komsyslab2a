@@ -1,30 +1,16 @@
-package serverapplication;
-
-import clientapplication.ClientRMI;
-
-import java.io.IOException;
-import java.net.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by o_0 on 2016-09-20.
  */
 public class Server extends UnicastRemoteObject implements ServerRMI, ServerLogic, ServerActions { // no need for thread
     private static final String DELIMITERS = "/ ";
-    //ServerSocket serverSocket;
-    //private Object clientLock = new Object();
     private ArrayList<ClientRMI> clients;
-    //private ConcurrentHashMap<SocketAddress, Client> clientLookup;
-    //private BlockingQueue<MsgContainer> messageToBroadcast = new LinkedBlockingQueue<MsgContainer>();
-    //private ExecutorService threadPool;
     private ConcurrentHashMap<String, Command> commandList = new ConcurrentHashMap<String, Command>();
-    //private AtomicBoolean running;
 
     @Override
     public void postChatMsg(ClientRMI client, String msg) throws RemoteException {
@@ -38,39 +24,11 @@ public class Server extends UnicastRemoteObject implements ServerRMI, ServerLogi
         }
     }
 
-//    class MsgContainer {
-//        public String msg;
-//        public Client client;
-//
-//        public MsgContainer(String msg, Client client) {
-//            this.msg = msg;
-//            this.client = client;
-//        }
-//    }
-
     public Server() throws RemoteException {
         super();
-//        this.running = new AtomicBoolean(true);
-//        this.serverSocket = new ServerSocket(port);
-//        this.clientLookup = new ConcurrentHashMap<SocketAddress, Client>();
-//        this.threadPool = Executors.newCachedThreadPool();
         this.clients = new ArrayList<>();
         registrateAllCommands();
-//        System.out.println(InetAddress.getLocalHost());
     }
-//
-//    class UserContainer {
-//        public String nickName;
-//        public ClientRMI client;
-//
-//        @Override
-//        public String toString() {
-//            return "UserContainer{" +
-//                    "nickName='" + nickName + '\'' +
-//                    ", client=" + client +
-//                    '}';
-//        }
-//    }
 
     private void registrateAllCommands() {
         commandList.put("quit", new CmdQuit(this));
@@ -79,92 +37,6 @@ public class Server extends UnicastRemoteObject implements ServerRMI, ServerLogi
         commandList.put("help", new CmdHelp(this));
     }
 
-    // loops thru and sends msg instead
-//    private void sendBroadcastMessage(MsgContainer msg) {
-//        sendBroadcastMessage(msg.msg, msg.client);
-//    }
-
-//    private void sendBroadcastMessage(String msg, Client from) {
-//        SocketAddress inetAddress = (from != null) ? from.getSocketAddress() : null;
-//        for (Map.Entry<SocketAddress, Client> entry : clientLookup.entrySet()) {
-//            System.out.println(entry);
-//            Client c = entry.getValue();
-//            if (!c.getSocketAddress().equals(inetAddress)) {
-//                try {
-//                    c.sendMsgToclient(msg);
-//                }catch (IOException ex) {
-//                    System.out.println(" c.sendMsgToclient(msg);");
-//                    disconnectClient(c);
-//                    c.terminateClient();
-//                }
-//
-//            }
-//        }
-//    }
-
-//    public void run() {
-//        while (running.get()) {
-//            try {
-//                MsgContainer msg = messageToBroadcast.take();
-//
-//                sendBroadcastMessage(msg);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-
-
-//    public void start() {
-//
-//        try {
-//            threadPool.execute(this);
-//            while (running.get()) {
-//                System.out.println("Waiting for connection...");
-//                Socket clientSocket = null;
-//                clientSocket = serverSocket.accept();
-//                System.out.println("Client connected!");
-//                SocketAddress inetAddress = clientSocket.getRemoteSocketAddress();//.getSocketAddress();
-//                Client client = new Client(clientSocket, this);
-//                Client oldClient = clientLookup.put(inetAddress, client);
-//                if (oldClient != null) {
-//                    oldClient.terminateClient();
-//                }
-//                System.out.println("Client Added!");
-//                threadPool.execute(client);
-//                broadcastMsg("Client " + client.getNickName() + " connected", null);
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }finally {
-//            shutdownServer();
-//        }
-//    }
-
-//    public void shutdownServer() {
-//        for (Map.Entry<SocketAddress, Client> entry : clientLookup.entrySet()) {
-//            //System.out.println(entry);
-//            Client c = entry.getValue();
-//            disconnectClient(c);
-//        }
-//
-//        try {
-//            if(serverSocket != null)
-//                serverSocket.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        running.set(false);
-//        threadPool.shutdown();
-//    }
-
-
-//    @Override
-//    public void removeClient(Client client) {
-//        SocketAddress addr = client.getSocketAddress();
-//        Client remove = this.clientLookup.remove(addr);
-//        broadcastMsg("Client: " + remove.getNickName() + " Disconected", remove);
-//    }
 
     @Override
     synchronized public void registrateClient(ClientRMI clientRMI) throws RemoteException {
@@ -212,18 +84,6 @@ public class Server extends UnicastRemoteObject implements ServerRMI, ServerLogi
         return requestSender;
     }
 
-    // de registrate client
-//    @Override
-//    public void disconnectClient(ClientRMI client) {
-//        SocketAddress addr = client.getSocketAddress();
-//        Client remove = this.clientLookup.remove(addr);
-//        if (remove == null) {
-//            //System.out.println("Client already disconnect and been removed");
-//            return;
-//        }
-//        remove.terminateClient();
-//        broadcastMsg("Client: " + remove.getNickName() + " Disconected", remove);
-//    }
 
     @Override
     synchronized public String listNicknames() {
@@ -307,7 +167,6 @@ public class Server extends UnicastRemoteObject implements ServerRMI, ServerLogi
         if (cmd == null) {
             client.sendMsgToclient("Unkown command");
             return;
-
         }
         Command command = commandList.get(cmd);
         if (command != null) {

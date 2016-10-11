@@ -1,8 +1,3 @@
-package serverapplication;
-
-import clientapplication.ClientRMI;
-
-import java.io.IOException;
 import java.rmi.RemoteException;
 
 /**
